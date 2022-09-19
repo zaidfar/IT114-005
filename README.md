@@ -1,2 +1,4 @@
-# IT114-005
-#zaid farooqui
+
+IT114-005
+Zaid Farooqui
+I like pie
