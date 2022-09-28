@@ -1,3 +1,4 @@
+package M2;
 import java.util.Arrays;
 
 public class Problem2 {
@@ -19,8 +20,10 @@ public class Problem2 {
         String totalOutput = "";
         //TODO add/edit code here
        
+       for(double i : arr)
+            total+=i;
         //set the double to a string variable
-        totalOutput = total+"";
+        totalOutput = Math.round(total* 100.0)/100+"";
         //end add/edit section
         System.out.println("Total is " + totalOutput);
         System.out.println("End process");
