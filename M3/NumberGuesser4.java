@@ -92,7 +92,24 @@ public class NumberGuesser4 {
         System.out.println("That's right!");
         level++;// level up!
         strikes = 0;
-    }
+        makeEasierHarder(Boolean.TRUE);
+	}
+
+	private void makeEasierHarder(boolean more) {
+		if (more) {
+			if (maxStrikes > 1) {
+				maxStrikes--;
+				System.out.println("You're too good, the game has increased in difficulty, strikes = " + maxStrikes + ")");
+			}
+		} else {
+			if (maxStrikes < 5) {
+				maxStrikes++;
+				System.out.println("let's make this a bit easier for you= " + maxStrikes + ")");
+			}
+		}
+
+	}
+    
 
     private boolean processCommands(String message) {
         boolean processed = false;
@@ -122,8 +139,15 @@ public class NumberGuesser4 {
         if (guess == number) {
             win();
             pickNewRandom = true;
-        } else {
-            System.out.println("That's wrong");
+        }  else {
+            String numHint="";
+            if(guess>number) {
+                numHint="Guess a lower number";
+            }
+            else if (guess<number) {
+                numHint="Guess a higher number";
+            }
+            System.out.println("That's wrong " + numHint);
             strikes++;
             if (strikes >= maxStrikes) {
                 lose();
