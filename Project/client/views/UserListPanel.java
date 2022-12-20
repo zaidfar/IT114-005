@@ -1,4 +1,4 @@
-package Module7.Part9.client.views;
+package Project.client.views;
 
 import java.awt.BorderLayout;
 
@@ -14,11 +14,9 @@ import javax.swing.JEditorPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
-import javax.swing.JEditorPane;
 
 import Module7.Part9.client.ClientUtils;
 import Module7.Part9.client.ICardControls;
-
 
 public class UserListPanel extends JPanel {
     JPanel userListArea;

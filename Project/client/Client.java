@@ -1,4 +1,4 @@
-package Module7.Part9.client;
+package Project.client;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -7,7 +7,6 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.Scanner;
 
 import Module7.Part9.common.Payload;
 import Module7.Part9.common.PayloadType;
@@ -222,5 +221,4 @@ public enum Client {
             System.out.println("Server was never opened so this exception is ok");
         }
     }
-    
 }
