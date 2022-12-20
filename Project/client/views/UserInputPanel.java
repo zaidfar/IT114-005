@@ -1,4 +1,4 @@
-package Module7.Part9.client.views;
+package Project.client.views;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -11,7 +11,6 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-
 
 import Module7.Part9.client.ICardControls;
 import Module7.Part9.client.Card;

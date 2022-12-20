@@ -1,4 +1,4 @@
-package Module7.Part9.server;
+package Project.server;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -17,7 +17,6 @@ import Module7.Part9.common.RoomResultPayload;
 public class ServerThread extends Thread {
     private Socket client;
     private String clientName;
-    private String formattedName;
     private boolean isRunning = false;
     private ObjectOutputStream out;// exposed here for send()
     // private Server server;// ref to our server so we can call methods on it
@@ -25,19 +24,11 @@ public class ServerThread extends Thread {
     private Room currentRoom;
     private static Logger logger = Logger.getLogger(ServerThread.class.getName());
     private long myId;
-    private String Game;
 
     public void setClientId(long id) {
         myId = id;
     }
-    public void setGame(String game){
-        this.Game=game;
-    }
-    public String getGame(){
-        return Game;
-    }
-    public ServerThread(Socket myClient, Server server)  {
-    }
+
     public long getClientId() {
         return myId;
     }
@@ -57,14 +48,8 @@ public class ServerThread extends Thread {
         this.currentRoom = room;
 
     }
-    public void setFormattedName(String name) {
-        formattedName = name;
-    }
-    public String getFormattedName() {
-        return formattedName;
-    }
 
-    public void setClientName(String name) {
+    protected void setClientName(String name) {
         if (name == null || name.isBlank()) {
             System.err.println("Invalid client name being set");
             return;
@@ -89,14 +74,12 @@ public class ServerThread extends Thread {
     }
 
     public void disconnect() {
-        sendConnectionStatus(myId, getClientName(),false);
+        sendConnectionStatus(myId, getClientName(), false);
         info("Thread being disconnected by server");
         isRunning = false;
         cleanup();
     }
-  
-  
-           
+
     // send methods
     public boolean sendRoomName(String name) {
         Payload p = new Payload();

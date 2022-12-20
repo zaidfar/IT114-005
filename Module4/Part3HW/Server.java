@@ -47,7 +47,7 @@ public class Server {
 	}
     
     protected synchronized void broadcast(String message, long id) {
-       
+        //System.out.println(message+" " + id);
         if(processCommand(message, id)){
 
             return;

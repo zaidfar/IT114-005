@@ -1,4 +1,4 @@
-package Module7.Part9.server;
+package Project.server;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -6,13 +6,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.HashMap;
-import java.util.Map.Entry;
-import java.util.Random;
 
 import Module7.Part9.common.Constants;
-import Module7.Part9.common.GeneralUtils;
-
 
 public class Room implements AutoCloseable {
 	private String name;
@@ -25,12 +20,7 @@ public class Room implements AutoCloseable {
 	private final static String DISCONNECT = "disconnect";
 	private final static String LOGOUT = "logout";
 	private final static String LOGOFF = "logoff";
-	private final static String ROLL = "Roll";
-	private final static String COIN_FLIP = "CoinFlip";
 	private static Logger logger = Logger.getLogger(Room.class.getName());
-	private HashMap<String, String> converter = null;
-	private Random random = new Random();
-    private String[] Flip = {"Heads", "Tail"};
 
 	public Room(String name) {
 		this.name = name;
@@ -57,7 +47,6 @@ public class Room implements AutoCloseable {
 		if (clients.indexOf(client) > -1) {
 			info("Attempting to add a client that already exists");
 		} else {
-			
 			clients.add(client);
 			sendConnectionStatus(client, true);
 			sendRoomJoined(client);
@@ -69,7 +58,6 @@ public class Room implements AutoCloseable {
 		if (!isRunning) {
 			return;
 		}
-		
 		clients.remove(client);
 		// we don't need to broadcast it to the server
 		// only to our own Room
@@ -122,9 +110,6 @@ public class Room implements AutoCloseable {
 					case LOGOFF:
 						Room.disconnectClient(client, this);
 						break;
-					case COIN_FLIP:
-					case ROLL:
-						processCommand(comm[1], client.getClientId());
 					default:
 						wasCommand = false;
 						break;
@@ -183,7 +168,6 @@ public class Room implements AutoCloseable {
 			// it was a command, don't broadcast
 			return;
 		}
-		message = formatMessage(message);
 		long from = (sender == null) ? Constants.DEFAULT_CLIENT_ID : sender.getClientId();
 		synchronized (clients) {
 			Iterator<ServerThread> iter = clients.iterator();
@@ -196,122 +180,7 @@ public class Room implements AutoCloseable {
 			}
 		}
 	}
-	protected String formatMessage(String message) {	
-		String alteredMessage = message;	
-			
-		// expect pairs ** -- __	
-		if(converter == null){	
-			converter = new HashMap<String, String>();	
-			// user symbol => output text separated by |	
-			converter.put("\\*{2}", "<b>|</b>");	
-			converter.put("--", "<i>|</i>");	
-			converter.put("__", "<u>|</u>");	
-			converter.put("#r#", "<font color=\"red\">|</font>");	
-			converter.put("#g#", "<font color=\"green\">|</font>");	
-			converter.put("#b#", "<font color=\"blue\">|</font>");	
-		}	
-		for (Entry<String, String> kvp : converter.entrySet()) {	
-			if (GeneralUtils.countOccurencesInString(alteredMessage, kvp.getKey().toLowerCase()) >= 2) {	
-				String[] s1 = alteredMessage.split(kvp.getKey().toLowerCase());	
-				String m = "";	
-				for (int i = 0; i < s1.length; i++) {	
-					if (i % 2 == 0) {	
-						m += s1[i];	
-					} else {	
-						String[] wrapper = kvp.getValue().split("\\|");	
-						m += String.format("%s%s%s", wrapper[0], s1[i], wrapper[1]);	
-					}	
-				}	
-				alteredMessage = m;	
-			}	
-		}	
-		return alteredMessage;	
-	}
-	protected synchronized void disconnect(ServerThread client) {
-		long id = client.getId();
-        client.disconnect();
-		broadcast("Disconnected", id);
-	}
-    
-    protected synchronized void broadcast(String message, long id) {
-        //System.out.println(message+" " + id);
-        if(processCommand(message, id)){
-            return;
-        }
-        // let's temporarily use the thread id as the client identifier to
-        // show in all client's chat. This isn't good practice since it's subject to
-        // change as clients connect/disconnect
-        message = String.format("User[%d]: %s", id, message);
-        // end temp identifier
-        
-        // loop over clients and send out the message
-        Iterator<ServerThread> it = clients.iterator();
-        while (it.hasNext()) {
-            ServerThread client = it.next();
-            boolean wasSuccessful =  client.sendMessage(id, message);
-            if (!wasSuccessful) {
-                System.out.println(String.format("Removing disconnected client[%s] from list", client.getId()));
-                it.remove();
-                broadcast("Disconnected", id);
-            }
-        }
-    }
-    private boolean processCommand(String message, long clientId){
-        
-        if (message.equalsIgnoreCase("CoinFlip")){
-            Iterator<ServerThread> it = clients.iterator();
-            while (it.hasNext()) {
-                ServerThread client = it.next();
-                if(client.getClientId() == clientId){
-                    int coin = random.nextInt(2);
-                   
-                         
-                        broadcast("It was " + Flip[coin], clientId);
-                    
-                        return true;
-                }
-            }
-            
-        }   
-        else if(message.contains("Roll" )){
-            String[] Sides = message.replaceAll("Roll ", "").split("d");
-            Iterator<ServerThread> it = clients.iterator();
-            while (it.hasNext()) {
-                ServerThread client = it.next();
-                if(client.getClientId() == clientId){
-                    for(int i = 0; i<Integer.parseInt(Sides[0]); i++){
-                        int die = random.nextInt(Integer.parseInt (Sides[1]));
-                        
-                        broadcast("your roll is" + die, clientId);
-                    }
-                    
-                    return true;
-        
-                }
-            }   
-            
-        }
-        else{
-            System.out.println("Entry is not valid");
-            
-        }
-        if(message.equalsIgnoreCase("disconnect")){
-            Iterator<ServerThread> it = clients.iterator();
-            while (it.hasNext()) {
-                ServerThread client = it.next();
-                if(client.getId() == clientId){
-                    it.remove();
-                    disconnect(client);
-                    
-                    break;
-                }
-            }
-            return true;
-        }
-    
-        return false;
-    
-    }
+
 	protected synchronized void sendUserListToClient(ServerThread receiver) {
 		logger.log(Level.INFO, String.format("Room[%s] Syncing client list of %s to %s", getName(), clients.size(),
 				receiver.getClientName()));

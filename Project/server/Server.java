@@ -1,4 +1,4 @@
-package Module7.Part9.server;
+package Project.server;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -9,19 +9,14 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
-
-
 public enum Server {
     INSTANCE;
     int port = 3001;
     // connected clients
- //   private List<ServerThread> clients = new ArrayList<ServerThread>();
+    // private List<ServerThread> clients = new ArrayList<ServerThread>();
     private List<Room> rooms = new ArrayList<Room>();
     private Room lobby = null;// default room
     private long nextClientId = 1;
-   
-
-  
 
     private Queue<ServerThread> incomingClients = new LinkedList<ServerThread>();
     // https://www.geeksforgeeks.org/killing-threads-in-java/
@@ -43,7 +38,6 @@ public enum Server {
                 if (incoming_client != null) {
                     System.out.println("Client connected");
                     ServerThread sClient = new ServerThread(incoming_client, lobby);
-                    
                     sClient.start();
                     incomingClients.add(sClient);
                     incoming_client = null;
@@ -57,7 +51,7 @@ public enum Server {
             System.out.println("closing server socket");
         }
     }
-    
+
     void startQueueManager() {
         // Queue manager thread to wait for the ServerThread thread to start
         // before officially handing them off to a room and opening them for
@@ -137,7 +131,7 @@ public enum Server {
         }
         return false;
     }
-   
+
     /***
      * Attempts to create a room with given name if it doesn't exist already.
      * 

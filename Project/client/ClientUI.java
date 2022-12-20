@@ -1,4 +1,4 @@
-package Module7.Part9.client;
+package Project.client;
 
 import java.awt.CardLayout;
 import java.awt.Component;
@@ -17,16 +17,13 @@ import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JEditorPane;
 
 import Module7.Part9.client.views.ChatPanel;
 import Module7.Part9.client.views.ConnectionPanel;
 import Module7.Part9.client.views.Menu;
 import Module7.Part9.client.views.RoomsPanel;
 import Module7.Part9.client.views.UserInputPanel;
-import Module7.Part9.client.views.UserListPanel;
 import Module7.Part9.common.Constants;
-
 
 public class ClientUI extends JFrame implements IClientEvents, ICardControls {
     CardLayout card = null;// accessible so we can call next() and previous()
@@ -78,7 +75,6 @@ public class ClientUI extends JFrame implements IClientEvents, ICardControls {
         csPanel = new ConnectionPanel(this);
         inputPanel = new UserInputPanel(this);
         chatPanel = new ChatPanel(this);
-
         
         roomsPanel = new RoomsPanel(this);
 

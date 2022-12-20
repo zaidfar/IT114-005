@@ -1,4 +1,4 @@
-package Module7.Part9.client.views;
+package Project.client.views;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -151,7 +151,7 @@ public class ChatPanel extends JPanel {
     public void addText(String text) {
         JPanel content = chatArea;
         // add message
-        JEditorPane textContainer = new JEditorPane("text/html", text);
+        JEditorPane textContainer = new JEditorPane("text/plain", text);
 
         // sizes the panel to attempt to take up the width of the container
         // and expand in height based on word wrapping
