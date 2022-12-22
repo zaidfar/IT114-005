@@ -17,7 +17,6 @@ import Module7.Part9.common.RoomResultPayload;
 public class ServerThread extends Thread {
     private Socket client;
     private String clientName;
-    private String formattedName;
     private boolean isRunning = false;
     private ObjectOutputStream out;// exposed here for send()
     // private Server server;// ref to our server so we can call methods on it
@@ -57,14 +56,8 @@ public class ServerThread extends Thread {
         this.currentRoom = room;
 
     }
-    public void setFormattedName(String name) {
-        formattedName = name;
-    }
-    public String getFormattedName() {
-        return formattedName;
-    }
 
-    public void setClientName(String name) {
+    protected void setClientName(String name) {
         if (name == null || name.isBlank()) {
             System.err.println("Invalid client name being set");
             return;
@@ -89,13 +82,39 @@ public class ServerThread extends Thread {
     }
 
     public void disconnect() {
-        sendConnectionStatus(myId, getClientName(),false);
+        sendConnectionStatus(myId, getClientName(), false);
         info("Thread being disconnected by server");
         isRunning = false;
         cleanup();
     }
   
-  
+    public boolean sendMuteStatus(String username) {
+        Payload payload = new Payload();
+        payload.setPayloadType(PayloadType.MUTE);
+        payload.setMessage(username + " has muted you!" );
+        return send(payload);
+    }
+
+    public boolean sendUnmuteStatus(String username) {
+        Payload payload = new Payload();
+        payload.setPayloadType(PayloadType.UNMUTE);
+        payload.setMessage(username + " has unmuted you!" );
+        return send(payload);
+    }
+
+    public boolean sendMuteChangeColor(Long id) {
+        Payload payload = new Payload();
+        payload.setPayloadType(PayloadType.MUTE_CHANGE_COLOR);
+        payload.setClientId(id);
+        return send(payload);
+    }
+
+    public boolean sendUnmuteChangeColor(Long id) {
+        Payload payload = new Payload();
+        payload.setPayloadType(PayloadType.UNMUTE_CHANGE_COLOR);
+        payload.setClientId(id);
+        return send(payload);
+    }
            
     // send methods
     public boolean sendRoomName(String name) {

@@ -182,6 +182,16 @@ public enum Client {
             case JOIN_ROOM:
                 events.onRoomJoin(p.getMessage());
                 break;
+            case MUTE:
+            case UNMUTE:
+                events.onClientMute(p.getMessage());
+                break;
+            case MUTE_CHANGE_COLOR:
+                events.onClientMuteChangeColor(p.getClientId());
+                break;
+            case UNMUTE_CHANGE_COLOR:
+                events.onClientUnmuteChangeColor(p.getClientId());
+                break;
             default:
                 logger.log(Level.WARNING, "Unhandled payload type");
                 break;
