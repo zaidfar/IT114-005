@@ -9,19 +9,19 @@ import java.awt.event.ContainerEvent;
 import java.awt.event.ContainerListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JEditorPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollBar;
-import javax.swing.JScrollPane;
-import javax.swing.JTextField;
-import javax.swing.ScrollPaneConstants;
+import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import Module7.Part9.client.Card;
 import Module7.Part9.client.Client;
@@ -32,6 +32,8 @@ public class ChatPanel extends JPanel {
     private static Logger logger = Logger.getLogger(ChatPanel.class.getName());
     private JPanel chatArea = null;
     private UserListPanel userListPanel;
+    private List<String> messages = new ArrayList<>();
+
     public ChatPanel(ICardControls controls){
         super(new BorderLayout(10, 10));
         JPanel wrapper = new JPanel();
@@ -54,6 +56,7 @@ public class ChatPanel extends JPanel {
         JTextField textValue = new JTextField();
         input.add(textValue);
         JButton button = new JButton("Send");
+        JButton exportButton = new JButton("Export");
         // lets us submit with the enter key instead of just the button click
         textValue.addKeyListener(new KeyListener() {
 
@@ -93,8 +96,11 @@ public class ChatPanel extends JPanel {
                 e1.printStackTrace();
             }
         });
+
+        exportButton.addActionListener(event -> exportChatHistory());
         chatArea = content;
         input.add(button);
+        input.add(exportButton);
         userListPanel = new UserListPanel(controls);
         this.add(userListPanel, BorderLayout.EAST);
         this.add(input, BorderLayout.SOUTH);
@@ -149,6 +155,7 @@ public class ChatPanel extends JPanel {
         userListPanel.clearUserList();
     }
     public void addText(String text) {
+        messages.add(text);
         JPanel content = chatArea;
         // add message
         JEditorPane textContainer = new JEditorPane("text/html", text);
@@ -166,5 +173,32 @@ public class ChatPanel extends JPanel {
         // scroll down on new message
         JScrollBar vertical = ((JScrollPane) chatArea.getParent().getParent()).getVerticalScrollBar();
         vertical.setValue(vertical.getMaximum());
+    }
+
+    public void highlightUsername(Long clientId) {
+        userListPanel.highlightUsername(clientId);
+    }
+
+    public void grayOutUsername(Long clientId) {
+        userListPanel.grayOutUsername(clientId);
+    }
+
+    public void normalizeUsername(Long clientId) {
+        userListPanel.normalizeUsername(clientId);
+    }
+
+    private void exportChatHistory() {
+        JFileChooser fileChooser = new JFileChooser();
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("TEXT FILES", "txt", "text");
+        fileChooser.setFileFilter(filter);
+        fileChooser.showSaveDialog(this);
+
+        try{
+            File file = fileChooser.getSelectedFile();
+            Path path = Paths.get(file.getAbsolutePath());
+            Files.write(path, messages, StandardCharsets.UTF_8);
+        } catch (IOException e) {
+
+        }
     }
 }

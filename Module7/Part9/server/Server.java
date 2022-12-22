@@ -4,9 +4,11 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Queue;
 
 
@@ -19,10 +21,7 @@ public enum Server {
     private List<Room> rooms = new ArrayList<Room>();
     private Room lobby = null;// default room
     private long nextClientId = 1;
-   
-
-  
-
+    private final MuteController muteController = new MuteController();
     private Queue<ServerThread> incomingClients = new LinkedList<ServerThread>();
     // https://www.geeksforgeeks.org/killing-threads-in-java/
     private volatile boolean isRunning = false;
@@ -206,6 +205,18 @@ public enum Server {
                 room.sendMessage(null, message);
             }
         }
+    }
+
+    public void muteClient(Long client, Long clientToMute) {
+        muteController.addClientToMuteList(client, clientToMute);
+    }
+
+    public void unmuteClient(Long client, Long clientToMute) {
+        muteController.removeClientToMuteList(client, clientToMute);
+    }
+
+    public boolean isClientMuted(Long client, Long questionableClient) {
+        return muteController.isClientMuted(client, questionableClient);
     }
 
     private boolean processCommand(String message) {

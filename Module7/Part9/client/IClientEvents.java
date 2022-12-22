@@ -48,4 +48,22 @@ public interface IClientEvents {
      * @param roomName
      */
     void onRoomJoin(String roomName);
+
+    /**
+     * Receives the message, that the client got muted
+     * @param message
+     */
+    void onClientMute(String message);
+
+    /**
+     * Changes color of muted client name
+     * @param clientId
+     */
+    void onClientMuteChangeColor(Long clientId);
+
+    /**
+     * Normalizes color of unmuted client name
+     * @param clientId
+     */
+    void onClientUnmuteChangeColor(Long clientId);
 }

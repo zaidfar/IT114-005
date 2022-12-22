@@ -1,28 +1,20 @@
 package Module7.Part9.client.views;
 
-import java.awt.BorderLayout;
+import Module7.Part9.client.ClientUtils;
+import Module7.Part9.client.ICardControls;
 
-import java.awt.Component;
-import java.awt.Dimension;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ContainerEvent;
 import java.awt.event.ContainerListener;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.swing.BoxLayout;
-import javax.swing.JEditorPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.ScrollPaneConstants;
-import javax.swing.JEditorPane;
-
-import Module7.Part9.client.ClientUtils;
-import Module7.Part9.client.ICardControls;
-
 
 public class UserListPanel extends JPanel {
     JPanel userListArea;
     private static Logger logger = Logger.getLogger(UserListPanel.class.getName());
+    private Font defaultFont = new Font(Font.SANS_SERIF, Font.PLAIN, 12);
 
     public UserListPanel(ICardControls controls) {
         super(new BorderLayout(10, 10));
@@ -100,6 +92,40 @@ public class UserListPanel extends JPanel {
         Component[] cs = userListArea.getComponents();
         for (Component c : cs) {
             userListArea.remove(c);
+        }
+    }
+
+    protected void highlightUsername(Long clientId) {
+        Component[] cs = userListArea.getComponents();
+        for (Component c : cs) {
+            c.setFont(null);
+            c.setFont(defaultFont);
+            if (c.getName().equals(clientId + "")) {
+                c.setFont(new Font(Font.SERIF, Font.BOLD, 12));
+            }
+        }
+    }
+
+    protected void normalizeUsername(Long clientId) {
+        logger.log(Level.INFO, "Normalize Username from " + clientId);
+        Component[] cs = userListArea.getComponents();
+        for (Component c : cs) {
+            if (c.getName().equals(clientId + "")) {
+                c.setForeground(Color.BLACK);
+                break;
+            }
+        }
+    }
+
+    protected void grayOutUsername(Long clientId) {
+        logger.log(Level.INFO, "Gray out Username from " + clientId);
+        Component[] cs = userListArea.getComponents();
+        for (Component c : cs) {
+            if (c.getName().equals(clientId + "")) {
+                System.out.println(c.getName());
+                c.setForeground(Color.GRAY);
+                break;
+            }
         }
     }
 }

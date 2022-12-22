@@ -8,16 +8,14 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
 import java.io.IOException;
 import java.util.Hashtable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.swing.JFrame;
-import javax.swing.JMenuBar;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JEditorPane;
+import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import Module7.Part9.client.views.ChatPanel;
 import Module7.Part9.client.views.ConnectionPanel;
@@ -216,6 +214,7 @@ public class ClientUI extends JFrame implements IClientEvents, ICardControls {
         if (currentCard.ordinal() >= Card.CHAT.ordinal()) {
             String clientName = mapClientId(clientId);
             chatPanel.addText(String.format("%s: %s", clientName, message));
+            chatPanel.highlightUsername(clientId);
         }
     }
 
@@ -260,5 +259,22 @@ public class ClientUI extends JFrame implements IClientEvents, ICardControls {
         if (currentCard.ordinal() >= Card.CHAT.ordinal()) {
             chatPanel.addText("Joined room " + roomName);
         }
+    }
+
+    @Override
+    public void onClientMute(String message) {
+        if (currentCard.ordinal() >= Card.CHAT.ordinal()) {
+            chatPanel.addText(message);
+        }
+    }
+
+    @Override
+    public void onClientMuteChangeColor(Long clientId) {
+        chatPanel.grayOutUsername(clientId);
+    }
+
+    @Override
+    public void onClientUnmuteChangeColor(Long clientId) {
+        chatPanel.normalizeUsername(clientId);
     }
 }
