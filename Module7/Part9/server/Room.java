@@ -298,7 +298,7 @@ public class Room implements AutoCloseable {
         Iterator<ServerThread> it = clients.iterator();
         while (it.hasNext()) {
             ServerThread client = it.next();
-            if (Server.INSTANCE.isClientMuted(client.getClientId(), id)) {
+            if (!Server.INSTANCE.isClientMuted(client.getClientId(), id)) {
                 boolean wasSuccessful = client.sendMessage(id, message);
                 if (!wasSuccessful) {
                     System.out.println(String.format("Removing disconnected client[%s] from list", client.getId()));
